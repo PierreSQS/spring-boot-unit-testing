@@ -13,7 +13,7 @@ public class GradebookController {
 	private Gradebook gradebook;
 
 
-	@RequestMapping(value = "/", method = RequestMethod.GET)
+	@GetMapping("/")
 	public String getStudents(Model m) {
 		return "index";
 	}
