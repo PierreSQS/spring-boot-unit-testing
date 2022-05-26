@@ -1,4 +1,4 @@
-package com.luv2code.springmvc;
+package com.luv2code.springmvc.controller;
 
 import com.luv2code.springmvc.models.CollegeStudent;
 import com.luv2code.springmvc.models.GradebookCollegeStudent;
@@ -22,14 +22,13 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertIterableEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @TestPropertySource("/application.properties")
@@ -66,7 +65,7 @@ public class GradebookControllerTest {
     }
 
     @Test
-    public void getStudentsHttpRequest() throws Exception {
+    void getStudentsHttpRequest() throws Exception {
 
         CollegeStudent studentOne = new GradebookCollegeStudent("Eric", "Roby",
                         "eric_roby@luv2code_school.com");
@@ -74,7 +73,7 @@ public class GradebookControllerTest {
         CollegeStudent studentTwo = new GradebookCollegeStudent("Chad", "Darby",
                 "chad_darby@luv2code_school.com");
 
-        List<CollegeStudent> collegeStudentList = new ArrayList<>(Arrays.asList(studentOne, studentTwo));
+        List<CollegeStudent> collegeStudentList = Arrays.asList(studentOne, studentTwo);
 
         when(studentAndGradeServiceMock.getGradebook()).thenReturn(collegeStudentList);
 
@@ -85,27 +84,35 @@ public class GradebookControllerTest {
 
         ModelAndView mav = mvcResult.getModelAndView();
 
-        ModelAndViewAssert.assertViewName(mav, "index");
+        if (mav != null) {
+            ModelAndViewAssert.assertViewName(mav, "index");
+        } else {
+            assertFalse(false,"View not found!");
+        }
 
     }
 
     @Test
-    public void createStudentHttpRequest() throws Exception {
+    void createStudentHttpRequest() throws Exception {
 
         MvcResult mvcResult = this.mockMvc.perform(post("/")
                 .contentType(MediaType.APPLICATION_JSON)
                 .param("firstname", request.getParameterValues("firstname"))
                 .param("lastname", request.getParameterValues("lastname"))
                 .param("emailAddress", request.getParameterValues("emailAddress")))
-                .andExpect(status().isOk()).andReturn();
+                .andExpect(status().isOk()).andDo(print()).andReturn();
 
         ModelAndView mav = mvcResult.getModelAndView();
 
-        ModelAndViewAssert.assertViewName(mav, "index");
+        if (mav != null) {
+            ModelAndViewAssert.assertViewName(mav, "index");
+        } else {
+            assertFalse(false,"View not found!");
+        }
 
         CollegeStudent verifyStudent = studentDao.findByEmailAddress("chad.darby@luv2code_school.com");
 
-        assertNotNull(verifyStudent, "Student should be found");
+        assertNotNull(verifyStudent, "Student not found");
     }
 
     @AfterEach
