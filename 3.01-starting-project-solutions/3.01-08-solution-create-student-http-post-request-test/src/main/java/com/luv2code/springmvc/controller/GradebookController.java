@@ -26,7 +26,7 @@ public class GradebookController {
     }
 
     @PostMapping("/")
-    public String createStudent(@ModelAttribute("student") CollegeStudent student, Model model) {
+    public String createStudent(@ModelAttribute("student") CollegeStudent student) {
         studentService.createStudent(student.getFirstname(), student.getLastname(),
                 student.getEmailAddress());
         return "index";
@@ -35,7 +35,7 @@ public class GradebookController {
 
 
     @GetMapping("/studentInformation/{id}")
-    public String studentInformation(@PathVariable int id, Model model) {
+    public String studentInformation(@PathVariable int id) {
         return "studentInformation";
     }
 
