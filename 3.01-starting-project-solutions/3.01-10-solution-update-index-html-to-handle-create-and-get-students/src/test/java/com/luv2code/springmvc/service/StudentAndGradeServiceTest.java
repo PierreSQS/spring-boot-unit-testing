@@ -1,26 +1,22 @@
-package com.luv2code.springmvc;
+package com.luv2code.springmvc.service;
 
 import com.luv2code.springmvc.models.CollegeStudent;
 import com.luv2code.springmvc.repository.StudentDao;
-import com.luv2code.springmvc.service.StudentAndGradeService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.jdbc.Sql;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@TestPropertySource("/application.properties")
 @SpringBootTest
-public class StudentAndGradeServiceTest {
+class StudentAndGradeServiceTest {
 
     @Autowired
     private JdbcTemplate jdbc;
@@ -37,7 +33,7 @@ public class StudentAndGradeServiceTest {
                 "values (1, 'Eric', 'Roby', 'eric.roby@luv2code_school.com')");
     }
     @Test
-    public void createStudentService() {
+    void createStudentService() {
 
         studentService.createStudent("Chad", "Darby",
                 "chad.darby@luv2code_school.com");
@@ -50,7 +46,7 @@ public class StudentAndGradeServiceTest {
     }
 
     @Test
-    public void isStudentNullCheck() {
+    void isStudentNullCheck() {
 
         assertTrue(studentService.checkIfStudentIsNull(1));
 
@@ -58,7 +54,7 @@ public class StudentAndGradeServiceTest {
     }
 
     @Test
-    public void deleteStudentService() {
+    void deleteStudentService() {
 
         Optional<CollegeStudent> deletedCollegeStudent = studentDao.findById(1);
 
@@ -73,17 +69,10 @@ public class StudentAndGradeServiceTest {
 
     @Sql("/insertData.sql")
     @Test
-    public void getGradebookService() {
+    void getGradebookService() {
 
-        Iterable<CollegeStudent> iterableCollegeStudents = studentService.getGradebook();
-
-        List<CollegeStudent> collegeStudents = new ArrayList<>();
-
-        for (CollegeStudent collegeStudent : iterableCollegeStudents) {
-            collegeStudents.add(collegeStudent);
-        }
-
-        assertEquals(5, collegeStudents.size());
+        List<CollegeStudent> collegeStudentList = studentService.getGradebook();
+        assertEquals(5, collegeStudentList.size());
     }
 
     @AfterEach
